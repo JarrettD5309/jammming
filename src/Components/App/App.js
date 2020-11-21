@@ -3,6 +3,7 @@ import './App.css';
 import SearchBar from '../SearchBar/SearchBar';
 import SearchResults from '../SearchResults/SearchResults';
 import Playlist from '../Playlist/Playlist';
+import Spotify from '../../util/Spotify';
 
 class App extends React.Component {
   constructor(props) {
@@ -14,33 +15,33 @@ class App extends React.Component {
     this.search=this.search.bind(this);
     this.state = {
       searchResults: [
-        {
-          name: 'Move Your Body',
-          artist: 'Marshall Jefferson',
-          album: 'House Music Anthem',
-          id: 100
-        },
-        {
-          name: 'Big Fun',
-          artist: 'Inner City',
-          album: 'Big Fun 12"',
-          id: 200
-        }
+        // {
+        //   name: 'Move Your Body',
+        //   artist: 'Marshall Jefferson',
+        //   album: 'House Music Anthem',
+        //   id: 100
+        // },
+        // {
+        //   name: 'Big Fun',
+        //   artist: 'Inner City',
+        //   album: 'Big Fun 12"',
+        //   id: 200
+        // }
       ],
       playlistName: 'Playlist A',
       playlistTracks: [
-        {
-          name: 'Go DJ',
-          artist: 'Lil Wayne',
-          album: 'Tha Carter',
-          id: 300
-        },
-        {
-          name: 'Bring It Back',
-          artist: 'Lil Wayne',
-          album: 'Tha Carter',
-          id: 400
-        }
+        // {
+        //   name: 'Go DJ',
+        //   artist: 'Lil Wayne',
+        //   album: 'Tha Carter',
+        //   id: 300
+        // },
+        // {
+        //   name: 'Bring It Back',
+        //   artist: 'Lil Wayne',
+        //   album: 'Tha Carter',
+        //   id: 400
+        // }
       ]
     }
   }
@@ -89,12 +90,24 @@ class App extends React.Component {
   }
 
   savePlaylist() {
-    const trackURIs = [];
+    const trackURIs = this.state.playlistTracks.map(track=>track.uri);
     console.log('save playlist');
+    Spotify.savePlaylist(this.state.playlistName, trackURIs).then(()=> {
+      this.setState({
+        playlistName: 'New Playlist',
+        playlistTracks: []
+      })
+    })
   }
 
   search(searchTerm) {
     console.log(searchTerm);
+    Spotify.search(searchTerm)
+      .then(searchResults=>{
+      this.setState({searchResults: searchResults}
+        );
+    })
+    // .then(searchResults=>console.log(searchResults));
   }
 
   componentDidUpdate() {
